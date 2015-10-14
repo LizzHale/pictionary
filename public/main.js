@@ -13,6 +13,7 @@ var pictionary = function() {
 
     canvas = $('canvas');
     // the context object allows you to draw simple graphics to the canvas
+    // documenation on context 2d: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
     context = canvas[0].getContext('2d');
     // set the height and width equal to the offset width and heigh
     // this allows the drawing to display with the correct resolutions

@@ -1,5 +1,6 @@
 var pictionary = function() {
     var canvas, context;
+    var drawing = false;
 
     var draw = function(position) {
         // the beginPath method tells the context object that you are about to start drawing
@@ -19,17 +20,26 @@ var pictionary = function() {
     // this allows the drawing to display with the correct resolutions
     canvas[0].width = canvas[0].offsetWidth;
     canvas[0].height = canvas[0].offsetHeight;
-    // mousemove listener
-    canvas.on('mousemove', function(event) {
-        // find the offset of the canvas on the page
-        var offset = canvas.offset();
-        // subtract the offset from the event page x and y attributes
-        // page attributes give the position of the mouse relative to the whole page
-        // by subtracting the offset we obtain the position of the mouse relative to the top-left of the canvas
-        var position = {x: event.pageX - offset.left,
-            y: event.pageY - offset.top};
-        // this position is passed to the draw function
-        draw(position);
+
+    // in lieu of mousedown/mouseup use on click event to toggle the true of drawing
+    canvas.on('click', function() {
+        drawing = !drawing;
+    });
+
+    canvas.on('mousemove', function (event) {
+        if (drawing) {
+            // find the offset of the canvas on the page
+            var offset = canvas.offset();
+            // subtract the offset from the event page x and y attributes
+            // page attributes give the position of the mouse relative to the whole page
+            // by subtracting the offset we obtain the position of the mouse relative to the top-left of the canvas
+            var position = {
+                x: event.pageX - offset.left,
+                y: event.pageY - offset.top
+            };
+            // this position is passed to the draw function
+            draw(position);
+        }
     });
 };
 

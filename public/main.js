@@ -1,7 +1,56 @@
+var WORDS = [
+    "word", "letter", "number", "person", "pen", "class", "people",
+    "sound", "water", "side", "place", "man", "men", "woman", "women", "boy",
+    "girl", "year", "day", "week", "month", "name", "sentence", "line", "air",
+    "land", "home", "hand", "house", "picture", "animal", "mother", "father",
+    "brother", "sister", "world", "head", "page", "country", "question",
+    "answer", "school", "plant", "food", "sun", "state", "eye", "city", "tree",
+    "farm", "story", "sea", "night", "day", "life", "north", "south", "east",
+    "west", "child", "children", "example", "paper", "music", "river", "car",
+    "foot", "feet", "book", "science", "room", "friend", "idea", "fish",
+    "mountain", "horse", "watch", "color", "face", "wood", "list", "bird",
+    "body", "dog", "family", "song", "door", "product", "wind", "ship", "area",
+    "rock", "order", "fire", "problem", "piece", "top", "bottom", "king",
+    "space"
+];
+
 var pictionary = function() {
     var socket = io();
     var canvas, context;
     var drawing = false;
+    var guessBox = $('#guess input');
+    var guesses = $('#guesses');
+
+    var user = function(user) {
+        if (user['drawer'] == true) {
+            $('#word').css("display", "block");
+        } else {
+            $('#guess').css("display", "block");
+            canvas.css("pointer-events", "none");
+        }
+    };
+
+    var begin = function() {
+        if ($('#word')) {
+            var word = WORDS[Math.floor(Math.random() * WORDS.length)];
+            $('#word').text('Draw this: ' + word);
+        }
+    };
+
+    var onKeyDown = function(event) {
+        if (event.keyCode != 13) {
+            return;
+        }
+
+        socket.emit('guess', guessBox.val());
+        guessBox.val('');
+    };
+
+    guessBox.on('keydown', onKeyDown);
+
+    var guess = function(guess) {
+        guesses.append('<div>' + guess + '</div>');
+    };
 
     var draw = function(position) {
         // the beginPath method tells the context object that you are about to start drawing
@@ -44,7 +93,10 @@ var pictionary = function() {
         }
     });
 
+    socket.on('guess', guess);
     socket.on('draw', draw);
+    socket.on('user', user);
+    socket.on('begin', begin);
 };
 
 $(document).ready(function() {

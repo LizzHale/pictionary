@@ -40,6 +40,11 @@ io.on('connection', function(socket) {
     socket.on('guess', function(guess) {
         socket.broadcast.emit('guess', guess);
     });
+
+    socket.on('disconnect', function(socket) {
+        userCount--;
+        users.splice(users.indexOf(user['id'] == socket.id), 1);
+    });
 });
 
 server.listen(8080);

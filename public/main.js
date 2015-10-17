@@ -42,6 +42,7 @@ var pictionary = function() {
             return;
         }
 
+        guesses.append('<div>' + guessBox.val() + '</div>');
         socket.emit('guess', guessBox.val());
         guessBox.val('');
     };
